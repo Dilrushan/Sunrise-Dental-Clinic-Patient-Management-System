@@ -92,7 +92,7 @@ public class LoginForm extends javax.swing.JFrame {
         jButton3.setForeground(new java.awt.Color(255, 255, 255));
         jButton3.setText("Sign Up");
 
-        jButton4.setBackground(new java.awt.Color(255, 0, 102));
+        jButton4.setBackground(new java.awt.Color(255, 51, 51));
         jButton4.setForeground(new java.awt.Color(255, 255, 255));
         jButton4.setText("Exit");
 
