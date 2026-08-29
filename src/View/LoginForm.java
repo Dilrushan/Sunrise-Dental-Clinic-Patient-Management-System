@@ -48,6 +48,8 @@ public class LoginForm extends javax.swing.JFrame {
 
         jPanel4.setBackground(new java.awt.Color(0, 0, 153));
 
+        jLabel5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/SUNRISE DENTAL CLINIC 375x500.png"))); // NOI18N
+
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
         jPanel4Layout.setHorizontalGroup(
@@ -58,7 +60,7 @@ public class LoginForm extends javax.swing.JFrame {
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jLabel5, javax.swing.GroupLayout.DEFAULT_SIZE, 500, Short.MAX_VALUE)
+            .addComponent(jLabel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
         jPanel1.setBackground(new java.awt.Color(0, 204, 204));
@@ -74,7 +76,7 @@ public class LoginForm extends javax.swing.JFrame {
         jLabel2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/icons8-lock-30.png"))); // NOI18N
 
         jLabel3.setFont(new java.awt.Font("Cambria Math", 1, 18)); // NOI18N
-        jLabel3.setForeground(new java.awt.Color(51, 0, 204));
+        jLabel3.setForeground(new java.awt.Color(255, 255, 255));
         jLabel3.setText("   LOGIN");
 
         jButton1.setBackground(new java.awt.Color(0, 51, 255));
@@ -131,7 +133,7 @@ public class LoginForm extends javax.swing.JFrame {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(94, 94, 94)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 184, Short.MAX_VALUE)
+                    .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
