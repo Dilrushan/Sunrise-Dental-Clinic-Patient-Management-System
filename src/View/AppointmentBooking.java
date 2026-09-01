@@ -93,8 +93,10 @@ public class AppointmentBooking extends javax.swing.JFrame {
         jComboBox3.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "General", "Specialist" }));
 
         jButton1.setText("Book Appointment");
+        jButton1.addActionListener(this::jButton1ActionPerformed);
 
         jButton2.setText("Logout");
+        jButton2.addActionListener(this::jButton2ActionPerformed);
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -183,6 +185,29 @@ public class AppointmentBooking extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        // TODO add your handling code here:
+        String patientName = jComboBox1.getSelectedItem() != null ? jComboBox1.getSelectedItem().toString() : "";
+        String contactNo = jTextField1.getText().trim();
+        String doctorId = jComboBox2.getSelectedItem() != null ? jComboBox2.getSelectedItem().toString() : "";
+        String date = jTextField2.getText().trim();
+        String visitType = jComboBox3.getSelectedItem().toString();
+
+        if (contactNo.isEmpty() || date.isEmpty()) {
+            javax.swing.JOptionPane.showMessageDialog(this, "Please fill in all mandatory fields.", "Validation Error", javax.swing.JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        // Call Controller or DAO to insert appointment
+        javax.swing.JOptionPane.showMessageDialog(this, "Appointment successfully booked for " + patientName + "!");
+        this.dispose();
+    }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        // TODO add your handling code here:
+        this.dispose();
+    }//GEN-LAST:event_jButton2ActionPerformed
 
     /**
      * @param args the command line arguments
