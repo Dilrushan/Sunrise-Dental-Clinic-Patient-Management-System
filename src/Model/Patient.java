@@ -25,22 +25,10 @@ public class Patient {
         this.treatmentHistory = treatmentHistory;
     }
 
-    public int getPatientId() {
-        return patientId; 
-    }
-    public String getFullName() {
-        return fullName; 
-    }
-    public String getAddress() {
-        return address; 
-    }
-    public String getContactNumber() {
-        return contactNumber; 
-    }
-    public String getEmail() {
-        return email; 
-    }
-    public String getTreatmentHistory() {
-        return treatmentHistory; 
-    }
+    public int getPatientId() { return patientId; }
+    public String getFullName() { return fullName; }
+    public String getAddress() { return address; }
+    public String getContactNumber() { return contactNumber; }
+    public String getEmail() { return email; }
+    public String getTreatmentHistory() { return treatmentHistory; }
 }

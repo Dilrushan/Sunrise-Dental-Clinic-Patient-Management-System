@@ -11,26 +11,24 @@ package Model;
 public class User {
     private int userId;
     private String username;
+    private String passwordHash;
     private String fullName;
     private String role;
+    private String status;
 
-    public User(int userId, String username, String fullName, String role) {
+    public User(int userId, String username, String passwordHash, String fullName, String role, String status) {
         this.userId = userId;
         this.username = username;
+        this.passwordHash = passwordHash;
         this.fullName = fullName;
         this.role = role;
+        this.status = status;
     }
 
-    public int getUserId() {
-        return userId; 
-    }
-    public String getUsername() {
-        return username; 
-    }
-    public String getFullName() {
-        return fullName; 
-    }
-    public String getRole() {
-        return role; 
-    }
+    public int getUserId() { return userId; }
+    public String getUsername() { return username; }
+    public String getPasswordHash() { return passwordHash; }
+    public String getFullName() { return fullName; }
+    public String getRole() { return role; }
+    public String getStatus() { return status; }
 }
