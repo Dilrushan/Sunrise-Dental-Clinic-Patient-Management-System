@@ -84,6 +84,14 @@
         if (res.success) {
             document.getElementById('billContent').textContent = res.data.billText;
             document.getElementById('billModal').classList.add('active');
+            if (res.data && res.data.notification) {
+                const n = res.data.notification;
+                const toMatch = n.match(/To:\s*(.+)/);
+                const subMatch = n.match(/Subject:\s*(.+)/);
+                if (toMatch && subMatch) {
+                    APP.showAlert('alert-box', 'Email Notification Sent - To: ' + toMatch[1].trim() + ' | Subject: ' + subMatch[1].trim(), 'success');
+                }
+            }
         } else {
             APP.showAlert('alert-box', res.message, 'error');
         }

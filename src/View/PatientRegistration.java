@@ -270,6 +270,14 @@ public class PatientRegistration extends javax.swing.JFrame {
                 "Success",
                 javax.swing.JOptionPane.INFORMATION_MESSAGE);
 
+            String notification = web.NotificationService.getLastEmailSummary();
+            if (notification != null) {
+                javax.swing.JOptionPane.showMessageDialog(this,
+                    notification,
+                    "Email Notification Sent",
+                    javax.swing.JOptionPane.INFORMATION_MESSAGE);
+            }
+
             txtPatientName.setText("");
             txtAddress.setText("");
             txtContactNumber.setText("");

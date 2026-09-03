@@ -36,6 +36,14 @@
 
         if (res.success) {
             APP.showAlert('alert-box', 'Patient and appointment successfully registered!', 'success');
+            if (res.data && res.data.notification) {
+                const n = res.data.notification;
+                const toMatch = n.match(/To:\s*(.+)/);
+                const subMatch = n.match(/Subject:\s*(.+)/);
+                if (toMatch && subMatch) {
+                    APP.showAlert('alert-box', 'Email Notification Sent - To: ' + toMatch[1].trim() + ' | Subject: ' + subMatch[1].trim(), 'success');
+                }
+            }
             this.reset();
         } else {
             APP.showAlert('alert-box', res.message, 'error');

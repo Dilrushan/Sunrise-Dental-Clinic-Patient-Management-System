@@ -33,6 +33,29 @@ public class PatientDAO {
         return -1;
     }
 
+    public Patient getPatientByName(String name) {
+        String query = "SELECT patient_id, full_name, address, contact_number, email, treatment_history FROM patients WHERE full_name = ? LIMIT 1";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(query)) {
+            if (conn == null) return null;
+            pstmt.setString(1, name);
+            ResultSet rs = pstmt.executeQuery();
+            if (rs.next()) {
+                return new Patient(
+                    rs.getInt("patient_id"),
+                    rs.getString("full_name"),
+                    rs.getString("address"),
+                    rs.getString("contact_number"),
+                    rs.getString("email"),
+                    rs.getString("treatment_history")
+                );
+            }
+        } catch (SQLException e) {
+            System.err.println("Get patient by name failed: " + e.getMessage());
+        }
+        return null;
+    }
+
     public boolean isEmailExists(String email) {
         String query = "SELECT COUNT(*) FROM patients WHERE email = ?";
         try (Connection conn = DBConnection.getConnection();

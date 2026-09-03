@@ -289,6 +289,18 @@ public class ReceptionistDashboard extends javax.swing.JFrame {
         String bill = billingController.buildBill(patientName, visitType, treatment, baseFee);
 
         JOptionPane.showMessageDialog(this, bill, "Billing Summary", JOptionPane.INFORMATION_MESSAGE);
+
+        double tax = billingController.isGeneralVisit(treatment) ? 0.0 : baseFee * 0.05;
+        dao.PatientDAO patientDAO = new dao.PatientDAO();
+        Model.Patient patient = patientDAO.getPatientByName(patientName);
+        if (patient != null && patient.getEmail() != null && !patient.getEmail().trim().isEmpty()) {
+            web.NotificationService.sendBillReady(
+                patient.getEmail(), patientName, treatment, baseFee, tax, baseFee + tax);
+            String notification = web.NotificationService.getLastEmailSummary();
+            if (notification != null) {
+                JOptionPane.showMessageDialog(this, notification, "Email Notification Sent", JOptionPane.INFORMATION_MESSAGE);
+            }
+        }
     }//GEN-LAST:event_btnCalculateActionPerformed
 
     private void btnHelpActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnHelpActionPerformed

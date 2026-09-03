@@ -82,6 +82,14 @@
         const res = await APP.api('DELETE', '/api/appointments/' + id);
         if (res.success) {
             APP.showAlert('alert-box', 'Appointment deleted successfully.', 'success');
+            if (res.data && res.data.notification) {
+                const n = res.data.notification;
+                const toMatch = n.match(/To:\s*(.+)/);
+                const subMatch = n.match(/Subject:\s*(.+)/);
+                if (toMatch && subMatch) {
+                    APP.showAlert('alert-box', 'Email Notification Sent - To: ' + toMatch[1].trim() + ' | Subject: ' + subMatch[1].trim(), 'success');
+                }
+            }
             loadData();
         } else {
             APP.showAlert('alert-box', res.message, 'error');

@@ -4,6 +4,7 @@ import dao.PatientDAO;
 import dao.AppointmentDAO;
 import Model.Patient;
 import Model.Appointment;
+import web.NotificationService;
 
 public class AppointmentController {
     private PatientDAO patientDAO;
@@ -28,7 +29,12 @@ public class AppointmentController {
                 return false;
             }
             Appointment appointment = new Appointment(0, name, contact, doctorId, date, visitType, null, 0.00, "Scheduled");
-            return appointmentDAO.scheduleAppointment(appointment);
+            boolean booked = appointmentDAO.scheduleAppointment(appointment);
+            if (booked && email != null && !email.trim().isEmpty()) {
+                String doctorName = appointmentDAO.getDoctorNameById(doctorId);
+                NotificationService.sendBookingConfirmation(email, name, doctorName, date, visitType);
+            }
+            return booked;
         }
         return false;
     }
@@ -41,7 +47,15 @@ public class AppointmentController {
             return false;
         }
         Appointment appointment = new Appointment(0, patientName, contact, doctorId, date, visitType, null, 0.00, "Scheduled");
-        return appointmentDAO.scheduleAppointment(appointment);
+        boolean booked = appointmentDAO.scheduleAppointment(appointment);
+        if (booked) {
+            Patient existingPatient = patientDAO.getPatientByName(patientName);
+            if (existingPatient != null && existingPatient.getEmail() != null && !existingPatient.getEmail().trim().isEmpty()) {
+                String doctorName = appointmentDAO.getDoctorNameById(doctorId);
+                NotificationService.sendBookingConfirmation(existingPatient.getEmail(), patientName, doctorName, date, visitType);
+            }
+        }
+        return booked;
     }
 
     public boolean isDuplicateBooking(String patientName, int doctorId, String date) {

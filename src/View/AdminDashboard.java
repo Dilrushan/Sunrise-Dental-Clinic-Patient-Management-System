@@ -298,12 +298,26 @@ public class AdminDashboard extends javax.swing.JFrame {
         int confirm = JOptionPane.showConfirmDialog(this, "Are you sure you want to delete appointment #" + appointmentNo + "?", "Confirm Deletion", JOptionPane.YES_NO_OPTION);
         
         if (confirm == JOptionPane.YES_OPTION) {
+            String patientName = (String) jTable1.getValueAt(selectedRow, 1);
+            String apptDate = (String) jTable1.getValueAt(selectedRow, 4);
             String query = "DELETE FROM appointments WHERE appointment_id = ?";
             try (Connection con = DBConnection.getConnection();
                  PreparedStatement pst = con.prepareStatement(query)) {
                 pst.setInt(1, appointmentNo);
                 pst.executeUpdate();
                 JOptionPane.showMessageDialog(this, "Appointment deleted successfully.");
+
+                dao.PatientDAO patientDAO = new dao.PatientDAO();
+                Model.Patient patient = patientDAO.getPatientByName(patientName);
+                if (patient != null && patient.getEmail() != null && !patient.getEmail().trim().isEmpty()) {
+                    web.NotificationService.sendAppointmentDeleted(
+                        patient.getEmail(), patientName, apptDate);
+                    String notification = web.NotificationService.getLastEmailSummary();
+                    if (notification != null) {
+                        JOptionPane.showMessageDialog(this, notification, "Email Notification Sent", JOptionPane.INFORMATION_MESSAGE);
+                    }
+                }
+
                 loadAppointmentTable();
             } catch (Exception e) {
                 JOptionPane.showMessageDialog(this, "Delete failed: " + e.getMessage());

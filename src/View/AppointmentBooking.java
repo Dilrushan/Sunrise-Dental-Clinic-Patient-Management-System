@@ -246,6 +246,12 @@ public class AppointmentBooking extends javax.swing.JFrame {
 
         if (success) {
             JOptionPane.showMessageDialog(this, "Appointment Booked Successfully!");
+
+            String notification = web.NotificationService.getLastEmailSummary();
+            if (notification != null) {
+                JOptionPane.showMessageDialog(this, notification, "Email Notification Sent", JOptionPane.INFORMATION_MESSAGE);
+            }
+
             jTextFieldContact.setText("");
             jTextFieldDate.setText("");
             jComboPatient.setSelectedIndex(0);

@@ -2,6 +2,7 @@ package web.route;
 
 import com.sun.net.httpserver.HttpExchange;
 import web.ApiResult;
+import web.NotificationService;
 import web.SessionManager;
 import web.SessionManager.SessionData;
 import dao.AppointmentDAO;
@@ -63,9 +64,21 @@ public class AdminResource {
 
     public static void delete(HttpExchange exchange, int appointmentId) throws IOException {
         if (!checkRole(exchange, "Admin")) return;
+        Model.Appointment appt = appointmentDAO.getAppointmentById(appointmentId);
         boolean success = appointmentDAO.deleteAppointment(appointmentId);
         if (success) {
-            sendResponse(exchange, 200, ApiResult.ok("Appointment deleted", null));
+            String notification = null;
+            if (appt != null && appt.getPatientName() != null && !appt.getPatientName().trim().isEmpty()) {
+                dao.PatientDAO patientDAO = new dao.PatientDAO();
+                Model.Patient patient = patientDAO.getPatientByName(appt.getPatientName());
+                if (patient != null && patient.getEmail() != null && !patient.getEmail().trim().isEmpty()) {
+                    notification = NotificationService.sendAppointmentDeleted(
+                        patient.getEmail(), appt.getPatientName(), appt.getAppointmentDate());
+                }
+            }
+            java.util.LinkedHashMap<String, Object> data = new java.util.LinkedHashMap<>();
+            data.put("notification", notification);
+            sendResponse(exchange, 200, ApiResult.ok("Appointment deleted", data));
         } else {
             sendResponse(exchange, 500, ApiResult.error("Failed to delete appointment."));
         }

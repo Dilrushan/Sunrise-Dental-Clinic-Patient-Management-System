@@ -3,6 +3,7 @@ package web.route;
 import com.sun.net.httpserver.HttpExchange;
 import web.ApiResult;
 import web.JsonUtil;
+import web.NotificationService;
 import web.SessionManager;
 import web.SessionManager.SessionData;
 import Controller.AppointmentController;
@@ -51,7 +52,10 @@ public class AppointmentResource {
         boolean success = appointmentController.bookAppointmentForExistingPatient(
             patientName, contact, doctorId, date, visitType);
         if (success) {
-            sendResponse(exchange, 200, ApiResult.ok("Appointment booked successfully", null));
+            String notification = NotificationService.getLastEmailContent();
+            java.util.LinkedHashMap<String, Object> data = new java.util.LinkedHashMap<>();
+            data.put("notification", notification);
+            sendResponse(exchange, 200, ApiResult.ok("Appointment booked successfully", data));
         } else {
             sendResponse(exchange, 500, ApiResult.error("Failed to book appointment."));
         }
@@ -107,7 +111,10 @@ public class AppointmentResource {
         boolean success = appointmentController.addNewPatientAndAppointment(
             name, address, contact, email, history, doctorId, date, visitType);
         if (success) {
-            sendResponse(exchange, 200, ApiResult.ok("Patient and appointment registered successfully", null));
+            String notification = NotificationService.getLastEmailContent();
+            java.util.LinkedHashMap<String, Object> data = new java.util.LinkedHashMap<>();
+            data.put("notification", notification);
+            sendResponse(exchange, 200, ApiResult.ok("Patient and appointment registered successfully", data));
         } else {
             sendResponse(exchange, 500, ApiResult.error("Failed to register. Check constraints or duplicate booking."));
         }

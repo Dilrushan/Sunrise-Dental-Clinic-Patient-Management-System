@@ -145,6 +145,22 @@ public class AppointmentDAO {
         return list;
     }
 
+    public String getDoctorNameById(int doctorId) {
+        String query = "SELECT full_name FROM users WHERE user_id = ? AND role = 'Doctor'";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(query)) {
+            if (conn == null) return "Unknown Doctor";
+            pstmt.setInt(1, doctorId);
+            ResultSet rs = pstmt.executeQuery();
+            if (rs.next()) {
+                return rs.getString("full_name");
+            }
+        } catch (SQLException e) {
+            System.err.println("Get doctor name by ID failed: " + e.getMessage());
+        }
+        return "Unknown Doctor";
+    }
+
     public List<String[]> getAllDoctors() {
         List<String[]> doctors = new ArrayList<>();
         String query = "SELECT user_id, full_name FROM users WHERE role = 'Doctor' AND status = 'Active'";

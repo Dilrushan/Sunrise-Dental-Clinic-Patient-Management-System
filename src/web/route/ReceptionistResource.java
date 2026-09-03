@@ -3,6 +3,7 @@ package web.route;
 import com.sun.net.httpserver.HttpExchange;
 import web.ApiResult;
 import web.JsonUtil;
+import web.NotificationService;
 import web.SessionManager;
 import web.SessionManager.SessionData;
 import Controller.BillingController;
@@ -102,6 +103,15 @@ public class ReceptionistResource {
         double tax = billingController.isGeneralVisit(treatment) ? 0.0 : baseFee * 0.05;
         data.put("tax", tax);
         data.put("total", baseFee + tax);
+
+        dao.PatientDAO patientDAO = new dao.PatientDAO();
+        Model.Patient patient = patientDAO.getPatientByName(appointment.getPatientName());
+        String notification = null;
+        if (patient != null && patient.getEmail() != null && !patient.getEmail().trim().isEmpty()) {
+            notification = NotificationService.sendBillReady(
+                patient.getEmail(), appointment.getPatientName(), treatment, baseFee, tax, baseFee + tax);
+        }
+        data.put("notification", notification);
 
         sendResponse(exchange, 200, ApiResult.ok(data));
     }

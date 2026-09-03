@@ -54,6 +54,14 @@
 
         if (res.success) {
             APP.showAlert('alert-box', 'Appointment Booked Successfully!', 'success');
+            if (res.data && res.data.notification) {
+                const n = res.data.notification;
+                const toMatch = n.match(/To:\s*(.+)/);
+                const subMatch = n.match(/Subject:\s*(.+)/);
+                if (toMatch && subMatch) {
+                    APP.showAlert('alert-box', 'Email Notification Sent - To: ' + toMatch[1].trim() + ' | Subject: ' + subMatch[1].trim(), 'success');
+                }
+            }
             document.getElementById('contact').value = '';
             document.getElementById('date').value = '';
             patientSelect.selectedIndex = 0;
