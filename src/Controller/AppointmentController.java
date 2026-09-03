@@ -1,16 +1,10 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package Controller;
+
 import dao.PatientDAO;
 import dao.AppointmentDAO;
 import Model.Patient;
 import Model.Appointment;
-/**
- *
- * @author HP
- */
+
 public class AppointmentController {
     private PatientDAO patientDAO;
     private AppointmentDAO appointmentDAO;
@@ -20,20 +14,37 @@ public class AppointmentController {
         this.appointmentDAO = new AppointmentDAO();
     }
 
-    public boolean addNewPatientAndAppointment(String name, String address, String contact, String email, 
-                                               String history, int patientId, int doctorId, 
-                                               String date, String treatmentType) {
+    public boolean addNewPatientAndAppointment(String name, String address, String contact, String email,
+                                               String history, int doctorId, String date, String visitType) {
         if (name.isEmpty() || contact.isEmpty()) {
             return false;
         }
-        
+
         Patient patient = new Patient(0, name, address, contact, email, history);
-        boolean patientSaved = patientDAO.registerPatient(patient);
-        
-        if (patientSaved) {
-            Appointment appointment = new Appointment(0, patientId, doctorId, date, treatmentType, "Scheduled");
+        int newPatientId = patientDAO.registerPatient(patient);
+
+        if (newPatientId > 0) {
+            if (appointmentDAO.isDuplicateBooking(name, doctorId, date)) {
+                return false;
+            }
+            Appointment appointment = new Appointment(0, name, contact, doctorId, date, visitType, null, 0.00, "Scheduled");
             return appointmentDAO.scheduleAppointment(appointment);
         }
         return false;
+    }
+
+    public boolean bookAppointmentForExistingPatient(String patientName, String contact, int doctorId, String date, String visitType) {
+        if (patientName.isEmpty() || contact.isEmpty() || doctorId <= 0 || date.isEmpty()) {
+            return false;
+        }
+        if (appointmentDAO.isDuplicateBooking(patientName, doctorId, date)) {
+            return false;
+        }
+        Appointment appointment = new Appointment(0, patientName, contact, doctorId, date, visitType, null, 0.00, "Scheduled");
+        return appointmentDAO.scheduleAppointment(appointment);
+    }
+
+    public boolean isDuplicateBooking(String patientName, int doctorId, String date) {
+        return appointmentDAO.isDuplicateBooking(patientName, doctorId, date);
     }
 }

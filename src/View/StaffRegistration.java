@@ -4,6 +4,8 @@
  */
 package View;
 
+import javax.swing.JOptionPane;
+
 /**
  *
  * @author HP
@@ -45,7 +47,7 @@ public class StaffRegistration extends javax.swing.JFrame {
         jCheckBox1 = new javax.swing.JCheckBox();
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
+        btnLogout = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -86,7 +88,7 @@ public class StaffRegistration extends javax.swing.JFrame {
         jComboBox1.addActionListener(this::jComboBox1ActionPerformed);
 
         jCheckBox1.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        jCheckBox1.setForeground(new java.awt.Color(255, 255, 255));
+        jCheckBox1.setForeground(new java.awt.Color(0, 0, 0));
         jCheckBox1.setText("Show Password");
         jCheckBox1.addActionListener(this::jCheckBox1ActionPerformed);
 
@@ -96,8 +98,8 @@ public class StaffRegistration extends javax.swing.JFrame {
         jButton2.setText("Back");
         jButton2.addActionListener(this::jButton2ActionPerformed);
 
-        jButton3.setText("Logout");
-        jButton3.addActionListener(this::jButton3ActionPerformed);
+        btnLogout.setText("Logout");
+        btnLogout.addActionListener(this::btnLogoutActionPerformed);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -128,7 +130,7 @@ public class StaffRegistration extends javax.swing.JFrame {
                 .addContainerGap(45, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(btnLogout, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(125, 125, 125))
         );
         jPanel1Layout.setVerticalGroup(
@@ -158,7 +160,7 @@ public class StaffRegistration extends javax.swing.JFrame {
                     .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
-                .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(btnLogout, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -210,14 +212,24 @@ public class StaffRegistration extends javax.swing.JFrame {
     }//GEN-LAST:event_jCheckBox1ActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        // TODO add your handling code here:
         String username = jTextField1.getText().trim();
-        String password = new String(jPasswordField1.getPassword()).trim();
-        String confirmPass = new String(jPasswordField2.getPassword()).trim();
+        String password = new String(jPasswordField1.getPassword());
+        String confirmPass = new String(jPasswordField2.getPassword());
         String role = jComboBox1.getSelectedItem().toString();
+        String fullName = username;
 
-        if (username.isEmpty() || password.isEmpty()) {
+        if (username.isEmpty() || password.isEmpty() || confirmPass.isEmpty()) {
             javax.swing.JOptionPane.showMessageDialog(this, "Username and Password cannot be empty.", "Error", javax.swing.JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        if (username.length() < 5) {
+            javax.swing.JOptionPane.showMessageDialog(this, "Username must be at least 5 characters long.", "Validation Error", javax.swing.JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        if (password.length() < 8) {
+            javax.swing.JOptionPane.showMessageDialog(this, "Password must be at least 8 characters long.", "Validation Error", javax.swing.JOptionPane.ERROR_MESSAGE);
             return;
         }
 
@@ -226,23 +238,33 @@ public class StaffRegistration extends javax.swing.JFrame {
             return;
         }
 
-        // Insert into database 'users' table via UserDAO
-        javax.swing.JOptionPane.showMessageDialog(this, "Staff user '" + username + "' registered successfully with role: " + role);
+        Controller.StaffController staffController = new Controller.StaffController();
+        String result = staffController.registerStaff(username, password, confirmPass, fullName, role);
+
+        if ("SUCCESS".equals(result)) {
+            javax.swing.JOptionPane.showMessageDialog(this, "Staff user '" + username + "' registered successfully with role: " + role);
+        } else {
+            javax.swing.JOptionPane.showMessageDialog(this, result, "Registration Failed", javax.swing.JOptionPane.ERROR_MESSAGE);
+            return;
+        }
         jTextField1.setText("");
         jPasswordField1.setText("");
         jPasswordField2.setText("");
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        // TODO add your handling code here:
+        new View.AdminDashboard().setVisible(true);
         this.dispose();
     }//GEN-LAST:event_jButton2ActionPerformed
 
-    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-        // TODO add your handling code here:
-        new LoginForm().setVisible(true);
-        this.dispose();
-    }//GEN-LAST:event_jButton3ActionPerformed
+    private void btnLogoutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLogoutActionPerformed
+        int confirm = JOptionPane.showConfirmDialog(this, "Are you sure you want to logout?", "Logout", JOptionPane.YES_NO_OPTION);
+        if (confirm == JOptionPane.YES_OPTION) {
+            Model.UserSession.clearSession();
+            new LoginForm().setVisible(true);
+            this.dispose(); 
+        }
+    }//GEN-LAST:event_btnLogoutActionPerformed
 
     /**
      * @param args the command line arguments
@@ -270,9 +292,9 @@ public class StaffRegistration extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnLogout;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
     private javax.swing.JCheckBox jCheckBox1;
     private javax.swing.JComboBox<String> jComboBox1;
     private javax.swing.JLabel jLabel1;

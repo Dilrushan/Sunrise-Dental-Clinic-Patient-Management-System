@@ -4,20 +4,59 @@
  */
 package View;
 
-/**
- *
- * @author HP
- */
+import javax.swing.JOptionPane;
+import dao.AppointmentDAO;
+import java.util.List;
+import Model.Appointment;
+
 public class DoctorDashboard extends javax.swing.JFrame {
-    
+
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(DoctorDashboard.class.getName());
 
-    /**
-     * Creates new form DoctorDashboard
-     */
     public DoctorDashboard() {
         initComponents();
         setLocationRelativeTo(null);
+        loadDoctorAppointments();
+    }
+
+    private void loadDoctorAppointments() {
+        javax.swing.table.DefaultTableModel model = (javax.swing.table.DefaultTableModel) jTable1.getModel();
+        model.setRowCount(0);
+        try {
+            String username = Model.UserSession.getLoggedInUser();
+            int doctorId = getCurrentDoctorId(username);
+            if (doctorId <= 0) {
+                return;
+            }
+            List<Appointment> list = new AppointmentDAO().getAppointmentsByDoctorId(doctorId);
+            for (Appointment a : list) {
+                model.addRow(new Object[]{
+                    a.getAppointmentId(),
+                    a.getPatientName(),
+                    a.getContactNo(),
+                    a.getAppointmentDate(),
+                    a.getVisitType(),
+                    a.getTreatmentPrescribed() == null ? "Not prescribed" : a.getTreatmentPrescribed()
+                });
+            }
+        } catch (Exception e) {
+            logger.log(java.util.logging.Level.SEVERE, "Failed to load appointments", e);
+        }
+    }
+
+    private int getCurrentDoctorId(String username) {
+        java.sql.Connection con = db.DBConnection.getConnection();
+        if (con == null) return -1;
+        try (java.sql.PreparedStatement pst = con.prepareStatement("SELECT user_id FROM users WHERE username = ?")) {
+            pst.setString(1, username);
+            java.sql.ResultSet rs = pst.executeQuery();
+            if (rs.next()) {
+                return rs.getInt("user_id");
+            }
+        } catch (Exception e) {
+            logger.log(java.util.logging.Level.SEVERE, "Failed to get doctor id", e);
+        }
+        return -1;
     }
 
     /**
@@ -37,7 +76,7 @@ public class DoctorDashboard extends javax.swing.JFrame {
         jComboBox1 = new javax.swing.JComboBox<>();
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
+        btnLogout = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -49,13 +88,13 @@ public class DoctorDashboard extends javax.swing.JFrame {
 
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null}
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null}
             },
             new String [] {
-                "Appointment No", "Patient Name", "Contact No", "Date", "Visit Type"
+                "Appointment No", "Patient Name", "Contact No", "Date", "Visit Type", "Treatment"
             }
         ));
         jScrollPane1.setViewportView(jTable1);
@@ -72,8 +111,8 @@ public class DoctorDashboard extends javax.swing.JFrame {
         jButton2.setText("Help");
         jButton2.addActionListener(this::jButton2ActionPerformed);
 
-        jButton3.setText("Logout");
-        jButton3.addActionListener(this::jButton3ActionPerformed);
+        btnLogout.setText("Logout");
+        btnLogout.addActionListener(this::btnLogoutActionPerformed);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -92,7 +131,7 @@ public class DoctorDashboard extends javax.swing.JFrame {
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(18, 18, 18)
-                                .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(btnLogout, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 245, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(34, Short.MAX_VALUE))
@@ -112,7 +151,7 @@ public class DoctorDashboard extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(btnLogout, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(39, Short.MAX_VALUE))
         );
 
@@ -135,26 +174,48 @@ public class DoctorDashboard extends javax.swing.JFrame {
     }//GEN-LAST:event_jComboBox1ActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        // TODO add your handling code here:
         String selectedTreatment = jComboBox1.getSelectedItem().toString();
         if (jComboBox1.getSelectedIndex() == 0) {
             javax.swing.JOptionPane.showMessageDialog(this, "Please select a valid treatment option.", "Warning", javax.swing.JOptionPane.WARNING_MESSAGE);
             return;
         }
 
-        javax.swing.JOptionPane.showMessageDialog(this, "Prescription saved: " + selectedTreatment);
+        int selectedRow = jTable1.getSelectedRow();
+        if (selectedRow == -1) {
+            javax.swing.JOptionPane.showMessageDialog(this, "Please select an appointment from the table first.", "Selection Required", javax.swing.JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        int appointmentId = (int) jTable1.getValueAt(selectedRow, 0);
+
+        AppointmentDAO appointmentDAO = new AppointmentDAO();
+        boolean saved = appointmentDAO.updatePrescription(appointmentId, selectedTreatment);
+        if (saved) {
+            double fee = appointmentDAO.getTreatmentFee(selectedTreatment);
+            if (fee >= 0) {
+                appointmentDAO.updateFee(appointmentId, fee);
+            }
+            javax.swing.JOptionPane.showMessageDialog(this,
+                "Prescription saved: " + selectedTreatment + "\nBilling can now be calculated by the receptionist.",
+                "Prescription Saved", javax.swing.JOptionPane.INFORMATION_MESSAGE);
+            loadDoctorAppointments();
+        } else {
+            javax.swing.JOptionPane.showMessageDialog(this, "Failed to save prescription. Please try again.", "Error", javax.swing.JOptionPane.ERROR_MESSAGE);
+        }
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        // TODO add your handling code here:
         new Help().setVisible(true);
     }//GEN-LAST:event_jButton2ActionPerformed
 
-    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-        // TODO add your handling code here:
-        new LoginForm().setVisible(true);
-        this.dispose();
-    }//GEN-LAST:event_jButton3ActionPerformed
+    private void btnLogoutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLogoutActionPerformed
+        int confirm = JOptionPane.showConfirmDialog(this, "Are you sure you want to logout?", "Logout", JOptionPane.YES_NO_OPTION);
+        if (confirm == JOptionPane.YES_OPTION) {
+            Model.UserSession.clearSession();
+            new LoginForm().setVisible(true);
+            this.dispose(); 
+        }
+    }//GEN-LAST:event_btnLogoutActionPerformed
 
     /**
      * @param args the command line arguments
@@ -182,9 +243,9 @@ public class DoctorDashboard extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnLogout;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
     private javax.swing.JComboBox<String> jComboBox1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;

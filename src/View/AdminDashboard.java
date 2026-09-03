@@ -39,12 +39,13 @@ public class AdminDashboard extends javax.swing.JFrame {
             
             while (rs.next()) {
                 model.addRow(new Object[]{
-                    rs.getInt("appointment_no"),
+                    rs.getInt("appointment_id"),
                     rs.getString("patient_name"),
                     rs.getString("contact_no"),
-                    rs.getString("doctor_id"),
-                    rs.getString("date"),
+                    rs.getInt("doctor_id"),
+                    rs.getString("appointment_date"),
                     rs.getString("visit_type"),
+                    rs.getObject("treatment_prescribed"),
                     rs.getDouble("fee")
                 });
             }
@@ -102,13 +103,13 @@ public class AdminDashboard extends javax.swing.JFrame {
 
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null}
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null}
             },
             new String [] {
-                "Appointment No", "Patient Name", "Contact No", "Doctor ID", "Date", "Visit Type", "Fee"
+                "Appointment No", "Patient Name", "Contact No", "Doctor ID", "Date", "Visit Type", "Treatment", "Fee"
             }
         ));
         jScrollPane1.setViewportView(jTable1);
@@ -237,12 +238,13 @@ public class AdminDashboard extends javax.swing.JFrame {
 
             while (rs.next()) {
                 model.addRow(new Object[]{
-                    rs.getInt("appointment_no"),
+                    rs.getInt("appointment_id"),
                     rs.getString("patient_name"),
                     rs.getString("contact_no"),
-                    rs.getString("doctor_id"),
-                    rs.getString("date"),
+                    rs.getInt("doctor_id"),
+                    rs.getString("appointment_date"),
                     rs.getString("visit_type"),
+                    rs.getObject("treatment_prescribed"),
                     rs.getDouble("fee")
                 });
             }
@@ -270,7 +272,7 @@ public class AdminDashboard extends javax.swing.JFrame {
         String newDate = JOptionPane.showInputDialog(this, "Enter new date (YYYY-MM-DD):", jTable1.getValueAt(selectedRow, 4));
         
         if (newDate != null && !newDate.trim().isEmpty()) {
-            String query = "UPDATE appointments SET date = ? WHERE appointment_no = ?";
+            String query = "UPDATE appointments SET appointment_date = ? WHERE appointment_id = ?";
             try (Connection con = DBConnection.getConnection();
                  PreparedStatement pst = con.prepareStatement(query)) {
                 pst.setString(1, newDate.trim());
@@ -296,7 +298,7 @@ public class AdminDashboard extends javax.swing.JFrame {
         int confirm = JOptionPane.showConfirmDialog(this, "Are you sure you want to delete appointment #" + appointmentNo + "?", "Confirm Deletion", JOptionPane.YES_NO_OPTION);
         
         if (confirm == JOptionPane.YES_OPTION) {
-            String query = "DELETE FROM appointments WHERE appointment_no = ?";
+            String query = "DELETE FROM appointments WHERE appointment_id = ?";
             try (Connection con = DBConnection.getConnection();
                  PreparedStatement pst = con.prepareStatement(query)) {
                 pst.setInt(1, appointmentNo);
@@ -318,6 +320,7 @@ public class AdminDashboard extends javax.swing.JFrame {
         // TODO add your handling code here:
         int confirm = JOptionPane.showConfirmDialog(this, "Are you sure you want to logout?", "Logout", JOptionPane.YES_NO_OPTION);
         if (confirm == JOptionPane.YES_OPTION) {
+            Model.UserSession.clearSession();
             new LoginForm().setVisible(true);
             this.dispose(); 
         }

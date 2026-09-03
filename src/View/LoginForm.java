@@ -85,10 +85,12 @@ public class LoginForm extends javax.swing.JFrame {
         btnLogin.addActionListener(this::btnLoginActionPerformed);
 
         jButton2.setText("Clear");
+        jButton2.addActionListener(this::jButton2ActionPerformed);
 
         jButton4.setBackground(new java.awt.Color(255, 51, 51));
         jButton4.setForeground(new java.awt.Color(255, 255, 255));
         jButton4.setText("Exit");
+        jButton4.addActionListener(this::jButton4ActionPerformed);
 
         jCheckBox1.setForeground(new java.awt.Color(0, 0, 0));
         jCheckBox1.setText("Show Password");
@@ -184,12 +186,9 @@ public class LoginForm extends javax.swing.JFrame {
 
     private void jCheckBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBox1ActionPerformed
         // TODO add your handling code here:
-        if(jCheckBox1.isSelected())
-        {
-            jPasswordField2.setEchoChar((char)0);
-        }
-        else
-        {
+        if (evt != null && jCheckBox1.isSelected()) {
+            jPasswordField2.setEchoChar((char) 0);
+        } else {
             jPasswordField2.setEchoChar('*');
         }
     }//GEN-LAST:event_jCheckBox1ActionPerformed
@@ -198,34 +197,58 @@ public class LoginForm extends javax.swing.JFrame {
         // TODO add your handling code here:
         String username = txtUsername.getText().trim();
         String password = new String(jPasswordField2.getPassword()).trim();
-    
+
         if (username.isEmpty() || password.isEmpty()) {
-            javax.swing.JOptionPane.showMessageDialog(this, 
-                "Please enter both username and password.", 
-                "Validation Error", 
+            javax.swing.JOptionPane.showMessageDialog(this,
+                "Please enter both username and password.",
+                "Validation Error",
                 javax.swing.JOptionPane.WARNING_MESSAGE);
             return;
         }
-    
+
         Controller.LoginController loginController = new Controller.LoginController();
-        boolean isAuthenticated = loginController.authenticate(username, password);
-    
-        if (isAuthenticated) {
-            javax.swing.JOptionPane.showMessageDialog(this, 
-                "Login Successful!", 
-                "Success", 
+        dao.UserDAO.User user = loginController.authenticate(username, password);
+
+        if (user != null) {
+            javax.swing.JOptionPane.showMessageDialog(this,
+                "Login Successful! Welcome " + user.getRole(),
+                "Success",
                 javax.swing.JOptionPane.INFORMATION_MESSAGE);
 
-            new View.ReceptionistDashboard().setVisible(true);
+            String role = user.getRole();
+            switch (role) {
+                case "Admin":
+                    new View.AdminDashboard().setVisible(true);
+                    break;
+                case "Doctor":
+                    new View.DoctorDashboard().setVisible(true);
+                    break;
+                default:
+                    new View.ReceptionistDashboard().setVisible(true);
+                    break;
+            }
             this.dispose();
-        } 
-        else {
-            javax.swing.JOptionPane.showMessageDialog(this, 
-                "Invalid Username or Password.", 
-                "Access Denied", 
+        } else {
+            javax.swing.JOptionPane.showMessageDialog(this,
+                "Invalid Username or Password.",
+                "Access Denied",
                 javax.swing.JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_btnLoginActionPerformed
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        txtUsername.setText("");
+        jPasswordField2.setText("");
+    }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
+        int confirm = javax.swing.JOptionPane.showConfirmDialog(this,
+            "Are you sure you want to exit?", "Exit",
+            javax.swing.JOptionPane.YES_NO_OPTION);
+        if (confirm == javax.swing.JOptionPane.YES_OPTION) {
+            System.exit(0);
+        }
+    }//GEN-LAST:event_jButton4ActionPerformed
 
     /**
      * @param args the command line arguments

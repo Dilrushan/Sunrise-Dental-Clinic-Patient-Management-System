@@ -9,12 +9,12 @@ package Model;
  * @author HP
  */
 public class User {
-    private int userId;
-    private String username;
-    private String passwordHash;
-    private String fullName;
-    private String role;
-    private String status;
+    private final int userId;
+    private final String username;
+    private final String passwordHash;
+    private final String fullName;
+    private final String role;
+    private final String status;
 
     public User(int userId, String username, String passwordHash, String fullName, String role, String status) {
         this.userId = userId;

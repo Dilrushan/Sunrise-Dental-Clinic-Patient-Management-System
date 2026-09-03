@@ -1,35 +1,185 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package dao;
+
 import Model.Appointment;
 import db.DBConnection;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-/**
- *
- * @author HP
- */
+import java.util.ArrayList;
+import java.util.List;
+
 public class AppointmentDAO {
-   public boolean scheduleAppointment(Appointment appointment) {
-        String query = "INSERT INTO appointments (patient_id, doctor_id, appointment_date, treatment_type, status) VALUES (?, ?, ?, ?, ?)";
-        
+
+    public boolean scheduleAppointment(Appointment appointment) {
+        String query = "INSERT INTO appointments (patient_name, contact_no, doctor_id, appointment_date, visit_type, fee, status) VALUES (?, ?, ?, ?, ?, ?, ?)";
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(query)) {
-            
-            pstmt.setInt(1, appointment.getPatientId());
-            pstmt.setInt(2, appointment.getDoctorId());
-            pstmt.setString(3, appointment.getAppointmentDate());
-            pstmt.setString(4, appointment.getTreatmentType());
-            pstmt.setString(5, appointment.getStatus());
-            
+            if (conn == null) return false;
+            pstmt.setString(1, appointment.getPatientName());
+            pstmt.setString(2, appointment.getContactNo());
+            pstmt.setInt(3, appointment.getDoctorId());
+            pstmt.setString(4, appointment.getAppointmentDate());
+            pstmt.setString(5, appointment.getVisitType());
+            pstmt.setDouble(6, appointment.getFee());
+            pstmt.setString(7, appointment.getStatus());
             return pstmt.executeUpdate() > 0;
         } catch (SQLException e) {
-            e.printStackTrace();
+            System.err.println("Schedule appointment failed: " + e.getMessage());
             return false;
         }
+    }
+
+    public boolean isDuplicateBooking(String patientName, int doctorId, String appointmentDate) {
+        String query = "SELECT COUNT(*) FROM appointments WHERE patient_name = ? AND doctor_id = ? AND appointment_date = ?";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(query)) {
+            if (conn == null) return false;
+            pstmt.setString(1, patientName);
+            pstmt.setInt(2, doctorId);
+            pstmt.setString(3, appointmentDate);
+            ResultSet rs = pstmt.executeQuery();
+            if (rs.next()) {
+                return rs.getInt(1) > 0;
+            }
+        } catch (SQLException e) {
+            System.err.println("Duplicate check failed: " + e.getMessage());
+        }
+        return false;
+    }
+
+    public Appointment getAppointmentById(int appointmentId) {
+        String query = "SELECT * FROM appointments WHERE appointment_id = ?";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(query)) {
+            if (conn == null) return null;
+            pstmt.setInt(1, appointmentId);
+            ResultSet rs = pstmt.executeQuery();
+            if (rs.next()) {
+                return new Appointment(
+                    rs.getInt("appointment_id"),
+                    rs.getString("patient_name"),
+                    rs.getString("contact_no"),
+                    rs.getInt("doctor_id"),
+                    rs.getString("appointment_date"),
+                    rs.getString("visit_type"),
+                    rs.getString("treatment_prescribed"),
+                    rs.getDouble("fee"),
+                    rs.getString("status")
+                );
+            }
+        } catch (SQLException e) {
+            System.err.println("Get appointment failed: " + e.getMessage());
+        }
+        return null;
+    }
+
+    public boolean updatePrescription(int appointmentId, String treatmentPrescribed) {
+        String query = "UPDATE appointments SET treatment_prescribed = ? WHERE appointment_id = ?";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(query)) {
+            if (conn == null) return false;
+            pstmt.setString(1, treatmentPrescribed);
+            pstmt.setInt(2, appointmentId);
+            return pstmt.executeUpdate() > 0;
+        } catch (SQLException e) {
+            System.err.println("Update prescription failed: " + e.getMessage());
+            return false;
+        }
+    }
+
+    public boolean updateFee(int appointmentId, double fee) {
+        String query = "UPDATE appointments SET fee = ? WHERE appointment_id = ?";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(query)) {
+            if (conn == null) return false;
+            pstmt.setDouble(1, fee);
+            pstmt.setInt(2, appointmentId);
+            return pstmt.executeUpdate() > 0;
+        } catch (SQLException e) {
+            System.err.println("Update fee failed: " + e.getMessage());
+            return false;
+        }
+    }
+
+    public double getTreatmentFee(String treatmentName) {
+        String query = "SELECT fee FROM treatments WHERE treatment_name = ?";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(query)) {
+            if (conn == null) return -1;
+            pstmt.setString(1, treatmentName);
+            ResultSet rs = pstmt.executeQuery();
+            if (rs.next()) {
+                return rs.getDouble("fee");
+            }
+        } catch (SQLException e) {
+            System.err.println("Get treatment fee failed: " + e.getMessage());
+        }
+        return -1;
+    }
+
+    public List<Appointment> getAppointmentsByDoctorId(int doctorId) {
+        List<Appointment> list = new ArrayList<>();
+        String query = "SELECT * FROM appointments WHERE doctor_id = ?";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(query)) {
+            if (conn == null) return list;
+            pstmt.setInt(1, doctorId);
+            ResultSet rs = pstmt.executeQuery();
+            while (rs.next()) {
+                list.add(new Appointment(
+                    rs.getInt("appointment_id"),
+                    rs.getString("patient_name"),
+                    rs.getString("contact_no"),
+                    rs.getInt("doctor_id"),
+                    rs.getString("appointment_date"),
+                    rs.getString("visit_type"),
+                    rs.getString("treatment_prescribed"),
+                    rs.getDouble("fee"),
+                    rs.getString("status")
+                ));
+            }
+        } catch (SQLException e) {
+            System.err.println("Get appointments by doctor failed: " + e.getMessage());
+        }
+        return list;
+    }
+
+    public List<String[]> getAllDoctors() {
+        List<String[]> doctors = new ArrayList<>();
+        String query = "SELECT user_id, full_name FROM users WHERE role = 'Doctor' AND status = 'Active'";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(query)) {
+            if (conn == null) return doctors;
+            ResultSet rs = pstmt.executeQuery();
+            while (rs.next()) {
+                doctors.add(new String[]{
+                    String.valueOf(rs.getInt("user_id")),
+                    rs.getString("full_name")
+                });
+            }
+        } catch (SQLException e) {
+            System.err.println("Get all doctors failed: " + e.getMessage());
+        }
+        return doctors;
+    }
+
+    public List<String[]> getAllPatients() {
+        List<String[]> patients = new ArrayList<>();
+        String query = "SELECT full_name, contact_number FROM patients";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(query)) {
+            if (conn == null) return patients;
+            ResultSet rs = pstmt.executeQuery();
+            while (rs.next()) {
+                patients.add(new String[]{
+                    rs.getString("full_name"),
+                    rs.getString("contact_number")
+                });
+            }
+        } catch (SQLException e) {
+            System.err.println("Get all patients failed: " + e.getMessage());
+        }
+        return patients;
     }
 }

@@ -41,7 +41,7 @@ public class PatientRegistration extends javax.swing.JFrame {
         txtContactNumber = new javax.swing.JTextField();
         txtEmail = new javax.swing.JTextField();
         btnSaveAppointment = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
+        btnBack = new javax.swing.JButton();
         jLabel5 = new javax.swing.JLabel();
         txtAddress = new javax.swing.JTextField();
         jLabel6 = new javax.swing.JLabel();
@@ -83,7 +83,8 @@ public class PatientRegistration extends javax.swing.JFrame {
         btnSaveAppointment.setText("Register Patient");
         btnSaveAppointment.addActionListener(this::btnSaveAppointmentActionPerformed);
 
-        jButton2.setText("Logout");
+        btnBack.setText("Back");
+        btnBack.addActionListener(this::btnBackActionPerformed);
 
         jLabel5.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         jLabel5.setForeground(new java.awt.Color(255, 255, 255));
@@ -113,13 +114,12 @@ public class PatientRegistration extends javax.swing.JFrame {
                         .addGap(28, 28, 28)
                         .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(jLabel8, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                .addComponent(jLabel7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, 120, Short.MAX_VALUE)
-                                .addComponent(jLabel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, 120, Short.MAX_VALUE)
-                                .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, 120, Short.MAX_VALUE)
-                                .addComponent(jLabel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                            .addComponent(jLabel7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jLabel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jLabel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addGap(18, 18, 18)
                         .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                             .addComponent(txtAddress, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 179, Short.MAX_VALUE)
@@ -133,7 +133,7 @@ public class PatientRegistration extends javax.swing.JFrame {
                         .addGap(46, 46, 46)
                         .addComponent(btnSaveAppointment, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
-                        .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(btnBack, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(152, Short.MAX_VALUE))
         );
         jPanel3Layout.setVerticalGroup(
@@ -170,7 +170,7 @@ public class PatientRegistration extends javax.swing.JFrame {
                 .addGap(38, 38, 38)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnSaveAppointment, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(btnBack, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -204,7 +204,6 @@ public class PatientRegistration extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnSaveAppointmentActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveAppointmentActionPerformed
-        // TODO add your handling code here:
         String name = txtPatientName.getText().trim();
         String address = txtAddress.getText().trim();
         String contact = txtContactNumber.getText().trim();
@@ -214,20 +213,61 @@ public class PatientRegistration extends javax.swing.JFrame {
         String treatment = txtTreatmentType.getSelectedItem().toString();
 
         if (name.isEmpty() || contact.isEmpty()) {
-            javax.swing.JOptionPane.showMessageDialog(this, 
-                "Patient Name and Contact Number are required fields.", 
-                "Missing Information", 
+            javax.swing.JOptionPane.showMessageDialog(this,
+                "Patient Name and Contact Number are required fields.",
+                "Missing Information",
                 javax.swing.JOptionPane.WARNING_MESSAGE);
             return;
         }
 
+        if (name.length() < 5) {
+            javax.swing.JOptionPane.showMessageDialog(this,
+                "Patient username must be at least 5 characters long.",
+                "Validation Error",
+                javax.swing.JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        if (!email.matches("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$")) {
+            javax.swing.JOptionPane.showMessageDialog(this,
+                "Please enter a valid email address (e.g. name@example.com).",
+                "Invalid Email",
+                javax.swing.JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        if (new dao.PatientDAO().isEmailExists(email)) {
+            javax.swing.JOptionPane.showMessageDialog(this,
+                "An account with this email already exists. Please use a different email.",
+                "Duplicate Email",
+                javax.swing.JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        if (date.isEmpty() || date.length() < 10) {
+            javax.swing.JOptionPane.showMessageDialog(this,
+                "Please enter a valid appointment date (YYYY-MM-DD).",
+                "Invalid Date",
+                javax.swing.JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        if (txtTreatmentType.getSelectedIndex() == 0) {
+            javax.swing.JOptionPane.showMessageDialog(this,
+                "Please select a valid treatment option.",
+                "Invalid Treatment",
+                javax.swing.JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        int doctorId = 1;
         Controller.AppointmentController controller = new Controller.AppointmentController();
-        boolean success = controller.addNewPatientAndAppointment(name, address, contact, email, history, 1, 1, date, treatment);
+        boolean success = controller.addNewPatientAndAppointment(name, address, contact, email, history, doctorId, date, treatment);
 
         if (success) {
-            javax.swing.JOptionPane.showMessageDialog(this, 
-                "Appointment successfully registered in database!", 
-                "Success", 
+            javax.swing.JOptionPane.showMessageDialog(this,
+                "Patient and appointment successfully registered in database!",
+                "Success",
                 javax.swing.JOptionPane.INFORMATION_MESSAGE);
 
             txtPatientName.setText("");
@@ -235,13 +275,19 @@ public class PatientRegistration extends javax.swing.JFrame {
             txtContactNumber.setText("");
             txtEmail.setText("");
             txtTreatmentHistory.setText("");
+            txtAppointmentDate.setText("");
+            txtTreatmentType.setSelectedIndex(0);
         } else {
-            javax.swing.JOptionPane.showMessageDialog(this, 
-                "Failed to save record. Check database constraints.", 
-                "Database Error", 
+            javax.swing.JOptionPane.showMessageDialog(this,
+                "Failed to save record. Check database constraints or duplicate booking.",
+                "Database Error",
                 javax.swing.JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_btnSaveAppointmentActionPerformed
+
+    private void btnBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBackActionPerformed
+        this.dispose();
+    }//GEN-LAST:event_btnBackActionPerformed
 
     /**
      * @param args the command line arguments
@@ -269,8 +315,8 @@ public class PatientRegistration extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnBack;
     private javax.swing.JButton btnSaveAppointment;
-    private javax.swing.JButton jButton2;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;

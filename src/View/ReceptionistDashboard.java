@@ -3,7 +3,13 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
 package View;
-
+import db.DBConnection;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.Statement;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
 /**
  *
  * @author HP
@@ -19,6 +25,30 @@ public class ReceptionistDashboard extends javax.swing.JFrame {
         initComponents();
         setLocationRelativeTo(null);
         setTitle("Receptionist Dashboard - Sunrise Dental Clinic");
+        loadReceptionistTable();
+    }
+    private void loadReceptionistTable() {
+        DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
+        model.setRowCount(0);
+        
+        try (Connection con = DBConnection.getConnection();
+             Statement stmt = con.createStatement();
+             ResultSet rs = stmt.executeQuery("SELECT * FROM appointments")) {
+            
+            while (rs.next()) {
+                model.addRow(new Object[]{
+                    rs.getInt("appointment_id"),
+                    rs.getString("patient_name"),
+                    rs.getString("contact_no"),
+                    rs.getString("appointment_date"),
+                    rs.getString("visit_type"),
+                    rs.getString("treatment_prescribed"),
+                    rs.getDouble("fee")
+                });
+            }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Error: " + e.getMessage());
+        }
     }
 
     /**
@@ -31,64 +61,64 @@ public class ReceptionistDashboard extends javax.swing.JFrame {
     private void initComponents() {
 
         jPanel1 = new javax.swing.JPanel();
-        jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
+        btnPatientRegister = new javax.swing.JButton();
+        btnBookAppointment = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
         jTextField1 = new javax.swing.JTextField();
-        jButton3 = new javax.swing.JButton();
-        jButton4 = new javax.swing.JButton();
+        btnSearch = new javax.swing.JButton();
+        btnRefresh = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
-        jButton5 = new javax.swing.JButton();
-        jButton6 = new javax.swing.JButton();
-        jButton7 = new javax.swing.JButton();
-        jButton8 = new javax.swing.JButton();
+        btnUpdate = new javax.swing.JButton();
+        btnCalculate = new javax.swing.JButton();
+        btnHelp = new javax.swing.JButton();
+        btnLogout = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         jPanel1.setBackground(new java.awt.Color(0, 153, 153));
 
-        jButton1.setText("Register Patient");
-        jButton1.addActionListener(this::jButton1ActionPerformed);
+        btnPatientRegister.setText("Register Patient");
+        btnPatientRegister.addActionListener(this::btnPatientRegisterActionPerformed);
 
-        jButton2.setText("Book Appointment");
-        jButton2.addActionListener(this::jButton2ActionPerformed);
+        btnBookAppointment.setText("Book Appointment");
+        btnBookAppointment.addActionListener(this::btnBookAppointmentActionPerformed);
 
         jLabel1.setBackground(new java.awt.Color(0, 0, 0));
         jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         jLabel1.setForeground(new java.awt.Color(0, 0, 0));
         jLabel1.setText("Search Patient:");
 
-        jButton3.setText("Search");
-        jButton3.addActionListener(this::jButton3ActionPerformed);
+        btnSearch.setText("Search");
+        btnSearch.addActionListener(this::btnSearchActionPerformed);
 
-        jButton4.setText("Refresh");
-        jButton4.addActionListener(this::jButton4ActionPerformed);
+        btnRefresh.setText("Refresh");
+        btnRefresh.addActionListener(this::btnRefreshActionPerformed);
 
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null}
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null}
             },
             new String [] {
-                "Appointment No", "Patient Name", "Contact No", "Date", "Visit Type", "Date"
+                "Appointment No", "Patient Name", "Contact No", "Date", "Visit Type", "Treatment", "Fee"
             }
         ));
         jScrollPane1.setViewportView(jTable1);
 
-        jButton5.setText("Update Appointment");
-        jButton5.addActionListener(this::jButton5ActionPerformed);
+        btnUpdate.setText("Update Appointment");
+        btnUpdate.addActionListener(this::btnUpdateActionPerformed);
 
-        jButton6.setText("Calculate Bill");
-        jButton6.addActionListener(this::jButton6ActionPerformed);
+        btnCalculate.setText("Calculate Bill");
+        btnCalculate.addActionListener(this::btnCalculateActionPerformed);
 
-        jButton7.setText("Help");
-        jButton7.addActionListener(this::jButton7ActionPerformed);
+        btnHelp.setText("Help");
+        btnHelp.addActionListener(this::btnHelpActionPerformed);
 
-        jButton8.setText("Logout");
-        jButton8.addActionListener(this::jButton8ActionPerformed);
+        btnLogout.setText("Logout");
+        btnLogout.addActionListener(this::btnLogoutActionPerformed);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -98,9 +128,9 @@ public class ReceptionistDashboard extends javax.swing.JFrame {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addContainerGap()
-                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(btnPatientRegister, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
-                        .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(btnBookAppointment, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(24, 24, 24)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -110,17 +140,17 @@ public class ReceptionistDashboard extends javax.swing.JFrame {
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(18, 18, 18)
-                                .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(btnSearch, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(18, 18, 18)
-                                .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(btnRefresh, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addComponent(jButton5, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(btnUpdate, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(18, 18, 18)
-                                .addComponent(jButton6, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(btnCalculate, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(18, 18, 18)
-                                .addComponent(jButton7, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(btnHelp, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(18, 18, 18)
-                                .addComponent(jButton8, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                                .addComponent(btnLogout, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)))))
                 .addContainerGap(32, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
@@ -128,22 +158,22 @@ public class ReceptionistDashboard extends javax.swing.JFrame {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(btnPatientRegister, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnBookAppointment, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(btnSearch, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnRefresh, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 361, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton5, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton6, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton7, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton8, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(btnUpdate, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnCalculate, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnHelp, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnLogout, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(7, Short.MAX_VALUE))
         );
 
@@ -161,48 +191,120 @@ public class ReceptionistDashboard extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    private void btnPatientRegisterActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPatientRegisterActionPerformed
         // TODO add your handling code here:
         javax.swing.JOptionPane.showMessageDialog(this, "Opening Patient Registration form.");
         new PatientRegistration().setVisible(true);
-    }//GEN-LAST:event_jButton1ActionPerformed
+    }//GEN-LAST:event_btnPatientRegisterActionPerformed
 
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+    private void btnBookAppointmentActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBookAppointmentActionPerformed
         // TODO add your handling code here:
         new AppointmentBooking().setVisible(true);
-    }//GEN-LAST:event_jButton2ActionPerformed
+    }//GEN-LAST:event_btnBookAppointmentActionPerformed
 
-    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+    private void btnSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSearchActionPerformed
         // TODO add your handling code here:
-        String searchKey = jTextField1.getText().trim();
-        javax.swing.JOptionPane.showMessageDialog(this, "Searching patient record: " + searchKey);
-    }//GEN-LAST:event_jButton3ActionPerformed
+        String keyword = jTextField1.getText().trim();
+        if (keyword.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Please provide a name/contact to search.");
+            return;
+        }
 
-    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
+        DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
+        model.setRowCount(0);
+        try (Connection con = DBConnection.getConnection();
+             PreparedStatement pst = con.prepareStatement("SELECT * FROM appointments WHERE patient_name LIKE ? OR contact_no LIKE ?")) {
+            pst.setString(1, "%" + keyword + "%");
+            pst.setString(2, "%" + keyword + "%");
+            ResultSet rs = pst.executeQuery();
+            while (rs.next()) {
+                model.addRow(new Object[]{
+                    rs.getInt("appointment_id"), rs.getString("patient_name"),
+                    rs.getString("contact_no"), rs.getString("appointment_date"),
+                    rs.getString("visit_type"), rs.getString("treatment_prescribed"),
+                    rs.getDouble("fee")
+                });
+            }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Error: " + e.getMessage());
+        }
+    }//GEN-LAST:event_btnSearchActionPerformed
+
+    private void btnRefreshActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRefreshActionPerformed
         // TODO add your handling code here:
-        javax.swing.JOptionPane.showMessageDialog(this, "Dashboard data refreshed.");
-    }//GEN-LAST:event_jButton4ActionPerformed
+        jTextField1.setText("");
+        loadReceptionistTable();
+    }//GEN-LAST:event_btnRefreshActionPerformed
 
-    private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
+    private void btnUpdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUpdateActionPerformed
         // TODO add your handling code here:
-        javax.swing.JOptionPane.showMessageDialog(this, "Select an appointment from the table to update.");
-    }//GEN-LAST:event_jButton5ActionPerformed
+        int selectedRow = jTable1.getSelectedRow();
+        if (selectedRow == -1) {
+            JOptionPane.showMessageDialog(this, "Please select an appointment from the table.");
+            return;
+        }
+        int appointmentNo = (int) jTable1.getValueAt(selectedRow, 0);
+        String newType = JOptionPane.showInputDialog(this, "Update Visit Type (General/Specialist):", jTable1.getValueAt(selectedRow, 4));
+        if (newType != null) {
+            try (Connection con = DBConnection.getConnection();
+                 PreparedStatement pst = con.prepareStatement("UPDATE appointments SET visit_type = ? WHERE appointment_id = ?")) {
+                pst.setString(1, newType);
+                pst.setInt(2, appointmentNo);
+                pst.executeUpdate();
+                JOptionPane.showMessageDialog(this, "Appointment updated!");
+                loadReceptionistTable();
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(this, "Error: " + e.getMessage());
+            }
+        }
+    }//GEN-LAST:event_btnUpdateActionPerformed
 
-    private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
-        // TODO add your handling code here:
-        javax.swing.JOptionPane.showMessageDialog(this, "Calculating bill based on selected patient visit and treatment fees.");
-    }//GEN-LAST:event_jButton6ActionPerformed
+    private void btnCalculateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCalculateActionPerformed
+        int selectedRow = jTable1.getSelectedRow();
+        if (selectedRow == -1) {
+            JOptionPane.showMessageDialog(this, "Please select an appointment row to calculate/view bill.", "Selection Required", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
 
-    private void jButton7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton7ActionPerformed
+        String patientName = (String) jTable1.getValueAt(selectedRow, 1);
+        String visitType = (String) jTable1.getValueAt(selectedRow, 4);
+        Object treatmentObj = jTable1.getValueAt(selectedRow, 5);
+        String treatment = treatmentObj == null ? null : treatmentObj.toString();
+
+        if (treatment == null || treatment.isEmpty()) {
+            JOptionPane.showMessageDialog(this,
+                "Cannot calculate bill. The doctor has not yet prescribed a treatment for this appointment.\nOnly after the doctor saves the prescription can the bill be calculated.",
+                "No Prescription", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        int appointmentId = (int) jTable1.getValueAt(selectedRow, 0);
+        double baseFee = ((Number) jTable1.getValueAt(selectedRow, 6)).doubleValue();
+        if (baseFee == 0.0) {
+            baseFee = new Controller.BillingController().getBaseFee(treatment);
+            new Controller.BillingController().updateFee(appointmentId, baseFee);
+        }
+
+        Controller.BillingController billingController = new Controller.BillingController();
+        String bill = billingController.buildBill(patientName, visitType, treatment, baseFee);
+
+        JOptionPane.showMessageDialog(this, bill, "Billing Summary", JOptionPane.INFORMATION_MESSAGE);
+    }//GEN-LAST:event_btnCalculateActionPerformed
+
+    private void btnHelpActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnHelpActionPerformed
         // TODO add your handling code here:
         new Help().setVisible(true);
-    }//GEN-LAST:event_jButton7ActionPerformed
+    }//GEN-LAST:event_btnHelpActionPerformed
 
-    private void jButton8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton8ActionPerformed
+    private void btnLogoutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLogoutActionPerformed
         // TODO add your handling code here:
-        new LoginForm().setVisible(true);
-        this.dispose();
-    }//GEN-LAST:event_jButton8ActionPerformed
+        int confirm = JOptionPane.showConfirmDialog(this, "Are you sure you want to logout?", "Logout", JOptionPane.YES_NO_OPTION);
+        if (confirm == JOptionPane.YES_OPTION) {
+            Model.UserSession.clearSession();
+            new LoginForm().setVisible(true);
+            this.dispose(); 
+        }
+    }//GEN-LAST:event_btnLogoutActionPerformed
 
     /**
      * @param args the command line arguments
@@ -230,14 +332,14 @@ public class ReceptionistDashboard extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
-    private javax.swing.JButton jButton4;
-    private javax.swing.JButton jButton5;
-    private javax.swing.JButton jButton6;
-    private javax.swing.JButton jButton7;
-    private javax.swing.JButton jButton8;
+    private javax.swing.JButton btnBookAppointment;
+    private javax.swing.JButton btnCalculate;
+    private javax.swing.JButton btnHelp;
+    private javax.swing.JButton btnLogout;
+    private javax.swing.JButton btnPatientRegister;
+    private javax.swing.JButton btnRefresh;
+    private javax.swing.JButton btnSearch;
+    private javax.swing.JButton btnUpdate;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
