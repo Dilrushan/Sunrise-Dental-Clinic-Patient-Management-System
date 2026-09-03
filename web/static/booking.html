@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book Appointment - Sunrise Dental Clinic</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="form-page">
+        <div class="form-page-banner">
+            <div style="color:#fff;font-size:20px;text-align:center;padding:20px;">
+                <h2 style="font-size:28px;margin-bottom:10px;">SUNRISE</h2>
+                <h3 style="font-size:18px;font-weight:normal;">DENTAL CLINIC</h3>
+            </div>
+        </div>
+        <div class="form-page-content">
+            <div class="form-card">
+                <h2>Book Appointment for Registered Patient</h2>
+                <div id="alert-box"></div>
+                <form id="bookingForm">
+                    <div class="form-group">
+                        <label for="patientSelect">Select Patient</label>
+                        <select id="patientSelect" required></select>
+                    </div>
+                    <div class="form-group">
+                        <label for="contact">Contact Number</label>
+                        <input type="text" id="contact" placeholder="Enter contact number" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="doctorSelect">Select Doctor</label>
+                        <select id="doctorSelect" required></select>
+                    </div>
+                    <div class="form-group">
+                        <label for="date">Date (YYYY-MM-DD)</label>
+                        <input type="text" id="date" placeholder="YYYY-MM-DD" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="visitType">Visit Type</label>
+                        <select id="visitType">
+                            <option value="General">General</option>
+                            <option value="Specialist">Specialist</option>
+                        </select>
+                    </div>
+                    <div class="btn-row">
+                        <button type="submit" class="btn btn-primary">Book Appointment</button>
+                        <button type="button" class="btn btn-secondary" onclick="APP.redirectByRole(sessionStorage.getItem('role'))">Back</button>
+                        <button type="button" class="btn btn-secondary" id="logoutBtn">Logout</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <script src="js/app.js"></script>
+    <script src="js/booking.js"></script>
+</body>
+</html>

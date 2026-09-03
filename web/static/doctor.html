@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Doctor Dashboard - Sunrise Dental Clinic</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="dashboard">
+        <div class="dashboard-header">
+            <h1>Your Assigned Appointments & Patients</h1>
+            <span id="user-info" style="color:#fff;"></span>
+        </div>
+        <div id="alert-box"></div>
+        <div class="table-wrapper">
+            <table id="appointmentsTable">
+                <thead>
+                    <tr>
+                        <th>Appointment No</th>
+                        <th>Patient Name</th>
+                        <th>Contact No</th>
+                        <th>Date</th>
+                        <th>Visit Type</th>
+                        <th>Treatment</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+        <div style="margin-top:16px;display:flex;gap:12px;align-items:center;flex-wrap:wrap;">
+            <label style="color:#000;font-weight:600;">Select Treatment Option:</label>
+            <select id="treatmentSelect" style="padding:8px;border-radius:4px;font-size:14px;min-width:300px;">
+                <option value="">----------Select Standard Treatment ----------</option>
+                <option value="Routine Teeth Cleaning & Polishing (LKR 1500)">Routine Teeth Cleaning & Polishing (LKR 1500)</option>
+                <option value="Composite Dental Filling (LKR 2500)">Composite Dental Filling (LKR 2500)</option>
+                <option value="Root Canal Treatment (LKR 8000)">Root Canal Treatment (LKR 8000)</option>
+                <option value="Tooth Extraction (LKR 3500)">Tooth Extraction (LKR 3500)</option>
+                <option value="Dental Crown Fitting (LKR 15000)">Dental Crown Fitting (LKR 15000)</option>
+                <option value="General Consultation / Checkup (LKR 0)">General Consultation / Checkup (LKR 0)</option>
+            </select>
+            <button class="btn btn-primary" id="savePrescriptionBtn">Save Prescription</button>
+        </div>
+        <div class="nav-bar" style="margin-top:16px;">
+            <a href="help.html" class="btn btn-secondary">Help</a>
+            <button class="btn btn-secondary" id="logoutBtn">Logout</button>
+        </div>
+    </div>
+    <script src="js/app.js"></script>
+    <script src="js/doctor.js"></script>
+</body>
+</html>

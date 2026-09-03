@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Help & Guide - Sunrise Dental Clinic</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="dashboard">
+        <div class="dashboard-header">
+            <h1>User Help & Guide - Sunrise Dental Clinic</h1>
+        </div>
+        <div class="help-content">
+            <h2>SUNRISE DENTAL CLINIC - SYSTEM USER GUIDE</h2>
+
+            <h3>1. Receptionist Guide</h3>
+            <ul>
+                <li><strong>Register New Patient:</strong> Fill mandatory fields &amp; 10-digit phone.</li>
+                <li><strong>Book Appointment:</strong> Fill mandatory fields &amp; 10-digit phone.</li>
+                <li><strong>Search &amp; View:</strong> Enter appointment number to retrieve records.</li>
+                <li><strong>Billing:</strong> Compute consultation &amp; treatment fees instantly.</li>
+                <li><strong>Update Appointment:</strong> Select a row and change the visit type.</li>
+            </ul>
+
+            <h3>2. Doctor Guide</h3>
+            <ul>
+                <li>Log in to view assigned patient appointments.</li>
+                <li>Select an appointment row and choose a treatment option.</li>
+                <li>Click <strong>Save Prescription</strong> to record the treatment and update billing.</li>
+            </ul>
+
+            <h3>3. Admin Guide</h3>
+            <ul>
+                <li>Full access to all features.</li>
+                <li><strong>Register Staff:</strong> Create new staff accounts (Admin, Receptionist, Doctor).</li>
+                <li><strong>Register Patient:</strong> Register new patients with appointment details.</li>
+                <li><strong>Book Appointment:</strong> Book appointments for existing patients.</li>
+                <li><strong>Update/Delete:</strong> Select a row to modify or remove appointments.</li>
+            </ul>
+
+            <h3>4. General Notes</h3>
+            <ul>
+                <li>All times and dates use YYYY-MM-DD format.</li>
+                <li>Treatment fees are in Sri Lankan Rupees (LKR).</li>
+                <li>General Consultations have no fee (LKR 0).</li>
+                <li>Duplicate bookings for the same patient, doctor, and date are not allowed.</li>
+            </ul>
+        </div>
+        <div style="text-align:center;margin-top:16px;">
+            <button class="btn btn-secondary" onclick="history.back()">Close Help</button>
+        </div>
+    </div>
+    <script src="js/app.js"></script>
+    <script>
+        (async function() {
+            const user = await APP.checkAuth();
+            if (user) sessionStorage.setItem('role', user.role);
+        })();
+    </script>
+</body>
+</html>

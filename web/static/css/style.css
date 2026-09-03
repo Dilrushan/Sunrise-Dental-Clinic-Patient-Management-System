@@ -1,0 +1,421 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: #e8f4f4;
+    color: #333;
+    min-height: 100vh;
+}
+
+/* Login page */
+.login-wrapper {
+    display: flex;
+    min-height: 100vh;
+}
+
+.login-banner {
+    width: 375px;
+    background: #000099;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.login-banner img {
+    max-width: 100%;
+    height: auto;
+}
+
+.login-form-area {
+    flex: 1;
+    background: #009999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.login-card {
+    width: 400px;
+    padding: 40px;
+    text-align: center;
+}
+
+.login-card h2 {
+    color: #fff;
+    font-size: 24px;
+    margin-bottom: 30px;
+    font-family: 'Cambria Math', serif;
+    font-weight: bold;
+}
+
+.form-group {
+    margin-bottom: 16px;
+    text-align: left;
+}
+
+.form-group label {
+    display: block;
+    color: #fff;
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 6px;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    width: 100%;
+    padding: 10px 12px;
+    border: none;
+    border-radius: 4px;
+    font-size: 14px;
+    background: #fff;
+    color: #000;
+}
+
+.form-group textarea {
+    resize: vertical;
+    min-height: 60px;
+}
+
+.checkbox-group {
+    margin: 12px 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.checkbox-group input[type="checkbox"] {
+    width: auto;
+}
+
+.checkbox-group label {
+    color: #000;
+    font-size: 13px;
+    font-weight: normal;
+    margin-bottom: 0;
+}
+
+.btn-row {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    margin-top: 20px;
+    flex-wrap: wrap;
+}
+
+/* Buttons */
+.btn {
+    padding: 8px 20px;
+    border: none;
+    border-radius: 4px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: opacity 0.2s;
+    white-space: nowrap;
+}
+
+.btn:hover {
+    opacity: 0.85;
+}
+
+.btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.btn-primary {
+    background: #0033ff;
+    color: #fff;
+}
+
+.btn-success {
+    background: #28a745;
+    color: #fff;
+}
+
+.btn-danger {
+    background: #dc3545;
+    color: #fff;
+}
+
+.btn-secondary {
+    background: #6c757d;
+    color: #fff;
+}
+
+.btn-teal {
+    background: #009999;
+    color: #fff;
+}
+
+.btn-nav {
+    background: #0033ff;
+    color: #fff;
+    padding: 8px 24px;
+}
+
+.btn-nav:hover {
+    background: #0022cc;
+}
+
+/* Dashboard layout */
+.dashboard {
+    background: #009999;
+    min-height: 100vh;
+    padding: 20px;
+}
+
+.dashboard-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.dashboard-header h1 {
+    color: #fff;
+    font-size: 18px;
+}
+
+.nav-bar {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-bottom: 16px;
+}
+
+/* Search bar */
+.search-bar {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+}
+
+.search-bar input {
+    padding: 8px 12px;
+    border: none;
+    border-radius: 4px;
+    font-size: 14px;
+    width: 200px;
+}
+
+.search-bar label {
+    color: #000;
+    font-weight: 600;
+    font-size: 13px;
+}
+
+/* Tables */
+.table-wrapper {
+    background: #fff;
+    border-radius: 6px;
+    overflow: hidden;
+    margin-bottom: 16px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+table thead {
+    background: #006666;
+    color: #fff;
+}
+
+table th,
+table td {
+    padding: 10px 12px;
+    text-align: left;
+    font-size: 13px;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+table tbody tr:hover {
+    background: #e8f4f4;
+}
+
+table tbody tr.selected {
+    background: #cce5ff;
+}
+
+table tbody tr:nth-child(even) {
+    background: #f9f9f9;
+}
+
+table tbody tr:nth-child(even):hover {
+    background: #e8f4f4;
+}
+
+/* Alert */
+.alert {
+    padding: 10px 16px;
+    border-radius: 4px;
+    margin-bottom: 12px;
+    font-size: 14px;
+}
+
+.alert-success {
+    background: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+
+.alert-error {
+    background: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+}
+
+.alert-warning {
+    background: #fff3cd;
+    color: #856404;
+    border: 1px solid #ffeeba;
+}
+
+/* Modal / Overlay */
+.modal-overlay {
+    display: none;
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0,0,0,0.5);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-overlay.active {
+    display: flex;
+}
+
+.modal {
+    background: #fff;
+    border-radius: 8px;
+    padding: 24px;
+    max-width: 600px;
+    width: 90%;
+    max-height: 80vh;
+    overflow-y: auto;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+}
+
+.modal h3 {
+    margin-bottom: 16px;
+    color: #006666;
+}
+
+.modal pre {
+    background: #f4f4f4;
+    padding: 16px;
+    border-radius: 4px;
+    white-space: pre-wrap;
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+.modal .btn-row {
+    margin-top: 16px;
+}
+
+/* Form page (split layout like Swing) */
+.form-page {
+    display: flex;
+    min-height: 100vh;
+}
+
+.form-page-banner {
+    width: 375px;
+    background: #3333ff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.form-page-banner img {
+    max-width: 100%;
+    height: auto;
+}
+
+.form-page-content {
+    flex: 1;
+    background: #009999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 30px;
+}
+
+.form-card {
+    background: transparent;
+    width: 100%;
+    max-width: 500px;
+}
+
+.form-card h2 {
+    color: #fff;
+    font-size: 20px;
+    margin-bottom: 24px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .login-banner,
+    .form-page-banner {
+        display: none;
+    }
+
+    .login-card {
+        width: 100%;
+        max-width: 400px;
+    }
+
+    .dashboard {
+        padding: 12px;
+    }
+
+    .search-bar input {
+        width: 140px;
+    }
+}
+
+/* Help page */
+.help-content {
+    background: #fff;
+    border-radius: 8px;
+    padding: 30px;
+    max-width: 700px;
+    margin: 40px auto;
+    line-height: 1.7;
+}
+
+.help-content h2 {
+    text-align: center;
+    color: #006666;
+    margin-bottom: 20px;
+}
+
+.help-content h3 {
+    color: #003399;
+    margin-top: 16px;
+}
+
+.help-content ul {
+    margin-left: 20px;
+    margin-top: 8px;
+}
+
+.help-content li {
+    margin-bottom: 6px;
+}

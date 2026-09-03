@@ -182,4 +182,134 @@ public class AppointmentDAO {
         }
         return patients;
     }
+
+    public List<Appointment> getAllAppointments() {
+        List<Appointment> list = new ArrayList<>();
+        String query = "SELECT * FROM appointments";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(query)) {
+            if (conn == null) return list;
+            ResultSet rs = pstmt.executeQuery();
+            while (rs.next()) {
+                list.add(new Appointment(
+                    rs.getInt("appointment_id"),
+                    rs.getString("patient_name"),
+                    rs.getString("contact_no"),
+                    rs.getInt("doctor_id"),
+                    rs.getString("appointment_date"),
+                    rs.getString("visit_type"),
+                    rs.getString("treatment_prescribed"),
+                    rs.getDouble("fee"),
+                    rs.getString("status")
+                ));
+            }
+        } catch (SQLException e) {
+            System.err.println("Get all appointments failed: " + e.getMessage());
+        }
+        return list;
+    }
+
+    public List<Appointment> searchAppointments(String keyword) {
+        List<Appointment> list = new ArrayList<>();
+        String query = "SELECT * FROM appointments WHERE patient_name LIKE ? OR contact_no LIKE ?";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(query)) {
+            if (conn == null) return list;
+            pstmt.setString(1, "%" + keyword + "%");
+            pstmt.setString(2, "%" + keyword + "%");
+            ResultSet rs = pstmt.executeQuery();
+            while (rs.next()) {
+                list.add(new Appointment(
+                    rs.getInt("appointment_id"),
+                    rs.getString("patient_name"),
+                    rs.getString("contact_no"),
+                    rs.getInt("doctor_id"),
+                    rs.getString("appointment_date"),
+                    rs.getString("visit_type"),
+                    rs.getString("treatment_prescribed"),
+                    rs.getDouble("fee"),
+                    rs.getString("status")
+                ));
+            }
+        } catch (SQLException e) {
+            System.err.println("Search appointments failed: " + e.getMessage());
+        }
+        return list;
+    }
+
+    public boolean updateAppointmentDate(int appointmentId, String date) {
+        String query = "UPDATE appointments SET appointment_date = ? WHERE appointment_id = ?";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(query)) {
+            if (conn == null) return false;
+            pstmt.setString(1, date);
+            pstmt.setInt(2, appointmentId);
+            return pstmt.executeUpdate() > 0;
+        } catch (SQLException e) {
+            System.err.println("Update appointment date failed: " + e.getMessage());
+            return false;
+        }
+    }
+
+    public boolean updateVisitType(int appointmentId, String visitType) {
+        String query = "UPDATE appointments SET visit_type = ? WHERE appointment_id = ?";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(query)) {
+            if (conn == null) return false;
+            pstmt.setString(1, visitType);
+            pstmt.setInt(2, appointmentId);
+            return pstmt.executeUpdate() > 0;
+        } catch (SQLException e) {
+            System.err.println("Update visit type failed: " + e.getMessage());
+            return false;
+        }
+    }
+
+    public boolean deleteAppointment(int appointmentId) {
+        String query = "DELETE FROM appointments WHERE appointment_id = ?";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(query)) {
+            if (conn == null) return false;
+            pstmt.setInt(1, appointmentId);
+            return pstmt.executeUpdate() > 0;
+        } catch (SQLException e) {
+            System.err.println("Delete appointment failed: " + e.getMessage());
+            return false;
+        }
+    }
+
+    public List<String[]> getTreatments() {
+        List<String[]> treatments = new ArrayList<>();
+        String query = "SELECT treatment_name, fee FROM treatments";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(query)) {
+            if (conn == null) return treatments;
+            ResultSet rs = pstmt.executeQuery();
+            while (rs.next()) {
+                treatments.add(new String[]{
+                    rs.getString("treatment_name"),
+                    String.valueOf(rs.getDouble("fee"))
+                });
+            }
+        } catch (SQLException e) {
+            System.err.println("Get treatments failed: " + e.getMessage());
+        }
+        return treatments;
+    }
+
+    public int getDoctorIdByUsername(String username) {
+        String query = "SELECT user_id FROM users WHERE username = ?";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(query)) {
+            if (conn == null) return -1;
+            pstmt.setString(1, username);
+            ResultSet rs = pstmt.executeQuery();
+            if (rs.next()) {
+                return rs.getInt("user_id");
+            }
+        } catch (SQLException e) {
+            System.err.println("Get doctor ID failed: " + e.getMessage());
+        }
+        return -1;
+    }
 }
