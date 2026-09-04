@@ -7,9 +7,19 @@
 <!-- the Compile on Save feature is turned off for the project. -->
 <!-- You can turn off the Compile on Save (or Deploy on Save) setting -->
 <!-- in the project's Project Properties dialog box.-->
-<project name="Sunrise_Dental_Clinic" default="default" basedir=".">
+    <project name="Sunrise_Dental_Clinic" default="default" basedir=".">
     <description>Builds, tests, and runs the project Sunrise Dental Clinic.</description>
     <import file="nbproject/build-impl.xml"/>
+
+    <target name="run-all-tests" depends="compile-test" description="Compile and run all JUnit 5 tests">
+        <java classname="org.junit.platform.console.ConsoleLauncher"
+              classpath="${run.test.classpath}" fork="true" failonerror="true">
+            <arg value="--scan-class-path"/>
+            <arg value="${build.test.classes.dir}"/>
+            <arg value="--details"/>
+            <arg value="tree"/>
+        </java>
+    </target>
     <!--
 
     There exist several targets which are by default empty and which can be 
